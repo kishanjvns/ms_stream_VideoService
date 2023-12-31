@@ -23,13 +23,13 @@ public class MinioStorageService {
     @Value("${minio.bucket.name}")
     private String COMMON_BUCKET_NAME;
 
-    public void save(MultipartFile file, UUID uuid) throws Exception {
+    public void save(InputStream inputStream,long fileSize, UUID uuid) throws Exception {
         minioClient.putObject(
                 PutObjectArgs
                         .builder()
                         .bucket(COMMON_BUCKET_NAME)
                         .object(uuid.toString())
-                        .stream(file.getInputStream(), file.getSize(), putObjectPartSize)
+                        .stream(inputStream, fileSize, putObjectPartSize)
                         .build()
         );
     }

@@ -31,8 +31,8 @@ public class DefaultVideoService implements VideoService {
                     .size(video.getSize())
                     .httpContentType(video.getContentType())
                     .build();
-            fileMetadataRepository. save(metadata);
-            storageService.save(video, fileUuid);
+            fileMetadataRepository.save(metadata);
+            storageService.save(video.getInputStream(),video.getSize(), fileUuid);
             return fileUuid;
         } catch (Exception ex) {
             log.error("Exception occurred when trying to save the file", ex);
