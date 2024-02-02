@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,9 +34,12 @@ public class MediaController {
     public Integer defaultChunkSize;
 
     @PostMapping(produces = "application/json", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<UUID> upload(@RequestParam("file") MultipartFile file){
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<UUID> upload(@RequestParam("file") MultipartFile file,@RequestHeader("Authorization") String authorizationHeader){
         try {
-            mediaService.save(file);
+            UserDetails user=(UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            log.info("detail of user: {}",user);
+            mediaService.save(file,user.getUsername(),authorizationHeader);
             return ResponseEntity.status(201).build();
         }catch (Exception ex){
             log.error("exception {}",ex.getMessage());
@@ -43,6 +48,7 @@ public class MediaController {
     }
 
     @GetMapping("/{uuid}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<byte[]> readChunk(
             @RequestHeader(value = HttpHeaders.RANGE, required = false) String range,
             @PathVariable UUID uuid

@@ -2,6 +2,8 @@ package com.tech.kj.service;
 import com.tech.kj.entity.VideoMetaEntity;
 import com.tech.kj.exception.StorageException;
 import com.tech.kj.repository.VideoRepository;
+import com.tech.kj.service.external.LoadUserByUserNameExternalService;
+import com.tech.kj.service.external.dto.RegisterUserDtoResponse;
 import com.tech.kj.storage.service.MinioStorageService;
 import com.tech.kj.util.Range;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +22,22 @@ public class DefaultVideoService implements VideoService {
 
     private final MinioStorageService storageService;
     private final VideoRepository fileMetadataRepository;
+    private final LoadUserByUserNameExternalService loadUserByUserNameExternalService;
 
     @Override
     @Transactional
-    public UUID save(MultipartFile video) {
+    public UUID save(MultipartFile video,String userName,String token) {
         try {
             UUID fileUuid = UUID.randomUUID();
             VideoMetaEntity metadata = VideoMetaEntity.builder()
-                    .id(fileUuid.toString())
                     .size(video.getSize())
                     .httpContentType(video.getContentType())
                     .build();
-            fileMetadataRepository.save(metadata);
-            storageService.save(video.getInputStream(),video.getSize(), fileUuid);
+            //metadata.setId(fileUuid.toString());
+            RegisterUserDtoResponse registerUserDto= loadUserByUserNameExternalService.fetchUserByUserName(userName,token);
+            metadata.setUserId(registerUserDto.getId());
+            VideoMetaEntity savedMetadata =  fileMetadataRepository.save(metadata);
+            storageService.save(video.getInputStream(),video.getSize(), UUID.fromString(savedMetadata.getId()));
             return fileUuid;
         } catch (Exception ex) {
             log.error("Exception occurred when trying to save the file", ex);

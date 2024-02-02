@@ -1,5 +1,6 @@
 package com.tech.kj.conf;
 
+import com.tech.kj.CommonConstant;
 import com.tech.kj.JwtFilter;
 import com.tech.kj.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth->
-                    auth.requestMatchers(WHITE_LIST_URL)
+                    auth.requestMatchers(CommonConstant.WHITE_LIST_URL)
                     .permitAll()
                     .requestMatchers("/stream/api/v1/videos/**").hasAnyRole("USER","ADMIN")
                     .anyRequest().authenticated()
                     )
-                .csrf(conf->conf.disable())
+                .csrf(csrf ->csrf.disable())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .build();

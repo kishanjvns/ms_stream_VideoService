@@ -22,9 +22,9 @@ public class AppBootstrap implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        createVideoMetaEntityInstance();
+        //createVideoMetaEntityInstance();
     }
-    public void createVideoMetaEntityInstance() throws IOException {
+    /*public void createVideoMetaEntityInstance() throws IOException {
 
         for(int i=1; i<= 3;i++ ){
             InputStream ioStream = AppBootstrap.class
@@ -45,5 +45,5 @@ public class AppBootstrap implements CommandLineRunner {
                 throw new RuntimeException(e);
             }
         }
-    }
+    }*/
 }

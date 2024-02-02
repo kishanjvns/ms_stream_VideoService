@@ -4,16 +4,17 @@ import lombok.*;
 
 
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table
-public class VideoMetaEntity {
-    @Id
-    private String id;
+public class VideoMetaEntity extends BaseEntity {
     private long size;
     private String httpContentType;
+    private String userId;
+    {
+
+    }
 }
