@@ -1,5 +1,6 @@
 package com.tech.kj.service;
 import com.tech.kj.entity.VideoMetaEntity;
+import com.tech.kj.exception.ApplicationConstant;
 import com.tech.kj.exception.StorageException;
 import com.tech.kj.repository.VideoRepository;
 import com.tech.kj.service.external.LoadUserByUserNameExternalService;
@@ -41,7 +42,7 @@ public class DefaultVideoService implements VideoService {
             return fileUuid;
         } catch (Exception ex) {
             log.error("Exception occurred when trying to save the file", ex);
-            throw new StorageException(ex);
+            throw new StorageException(ApplicationConstant.ERR_STORAGE_MIN_IO,ApplicationConstant.ERR_STORAGE_MIN_IO_MSG);
         }
     }
 
@@ -60,7 +61,7 @@ public class DefaultVideoService implements VideoService {
             return inputStream.readAllBytes();
         } catch (Exception exception) {
             log.error("Exception occurred when trying to read file with ID = {}", uuid);
-            throw new StorageException(exception);
+            throw new StorageException(ApplicationConstant.ERR_STORAGE_MIN_IO,ApplicationConstant.ERR_STORAGE_MIN_IO_MSG);
         }
     }
 

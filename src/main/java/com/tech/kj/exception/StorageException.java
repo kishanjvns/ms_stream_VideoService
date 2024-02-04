@@ -1,8 +1,9 @@
 package com.tech.kj.exception;
 
-public class StorageException extends RuntimeException {
+public class StorageException extends ApplicationBaseException {
 
-    public StorageException(Exception ex) {
-        super(ex);
+
+    public StorageException(String errorCode, String message) {
+        super(errorCode, message);
     }
 }
